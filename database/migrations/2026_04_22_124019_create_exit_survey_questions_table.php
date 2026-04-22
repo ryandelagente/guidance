@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('exit_survey_questions', function (Blueprint $table) {
+            $table->id();
+            $table->text('question_text');
+            $table->enum('question_type', ['text','rating_1_5','yes_no','multiple_choice']);
+            $table->json('options')->nullable();       // for multiple_choice
+            $table->boolean('is_required')->default(true);
+            $table->unsignedSmallInteger('sort_order')->default(0);
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('exit_survey_questions');
+    }
+};
