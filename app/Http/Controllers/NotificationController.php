@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\ClearanceRequest;
+use App\Models\Message;
 use App\Models\Referral;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
@@ -13,17 +15,26 @@ class NotificationController extends Controller
     {
         $user = $request->user();
 
+        // Unread messages — applies to everyone
+        $unreadMessages = Message::whereNull('read_at')
+            ->where('sender_id', '!=', $user->id)
+            ->whereHas('conversation', fn ($q) => $q->where('counselor_id', $user->id)->orWhere('student_user_id', $user->id))
+            ->count();
+
         if ($user->isStudent()) {
             $profile = $user->studentProfile;
+            $appointments = $profile
+                ? Appointment::where('student_profile_id', $profile->id)
+                    ->where('appointment_date', '>=', today())
+                    ->whereIn('status', ['confirmed'])->count()
+                : 0;
+
             return response()->json([
-                'total'        => 0,
-                'appointments' => $profile
-                    ? Appointment::where('student_profile_id', $profile->id)
-                        ->where('appointment_date', '>=', today())
-                        ->whereIn('status', ['confirmed'])->count()
-                    : 0,
-                'clearance'    => 0,
-                'referrals'    => 0,
+                'total'           => $appointments + $unreadMessages,
+                'appointments'    => $appointments,
+                'clearance'       => 0,
+                'referrals'       => 0,
+                'unreadMessages'  => $unreadMessages,
             ]);
         }
 
@@ -42,8 +53,8 @@ class NotificationController extends Controller
 
         $pendingClearance = ClearanceRequest::whereIn('status', ['pending', 'survey_done'])->count();
 
-        $total = $pendingReferrals + $todayAppointments + $pendingClearance;
+        $total = $pendingReferrals + $todayAppointments + $pendingClearance + $unreadMessages;
 
-        return response()->json(compact('total', 'pendingReferrals', 'todayAppointments', 'pendingClearance'));
+        return response()->json(compact('total', 'pendingReferrals', 'todayAppointments', 'pendingClearance', 'unreadMessages'));
     }
 }

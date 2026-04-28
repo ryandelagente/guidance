@@ -127,6 +127,171 @@ class StudentProfileController extends Controller
         return view('students.show', compact('student'));
     }
 
+    public function cumulativeRecord(StudentProfile $student)
+    {
+        $student->load([
+            'user',
+            'assignedCounselor',
+            'emergencyContacts',
+            'documents',
+            'appointments.counselor',
+            'counselingSessions.counselor',
+            'referrals.referredBy',
+            'disciplinaryRecords',
+            'testResults.test',
+            'clearanceRequests',
+            'certificates',
+        ]);
+
+        \App\Models\AuditLog::record(
+            action: 'export',
+            subject: $student,
+            description: "Generated cumulative record PDF for {$student->full_name}",
+        );
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('students.cumulative-record', compact('student'))
+            ->setPaper('a4', 'portrait')
+            ->setOption('defaultFont', 'DejaVu Sans');
+
+        $filename = 'CR-' . preg_replace('/[^A-Za-z0-9]+/', '-', $student->full_name) . '-' . now()->format('Ymd') . '.pdf';
+        return $pdf->download($filename);
+    }
+
+    public function timeline(StudentProfile $student)
+    {
+        $student->load('assignedCounselor');
+
+        $events = collect();
+
+        // Appointments
+        foreach ($student->appointments()->with('counselor')->get() as $a) {
+            $events->push([
+                'date'     => $a->appointment_date,
+                'time'     => substr($a->start_time, 0, 5),
+                'type'     => 'appointment',
+                'icon'     => '📅',
+                'color'    => 'blue',
+                'title'    => 'Appointment — ' . ucwords(str_replace('_', ' ', $a->appointment_type)),
+                'subtitle' => 'with ' . ($a->counselor?->name ?? 'Counselor'),
+                'status'   => ucwords(str_replace('_', ' ', $a->status)),
+                'url'      => route('appointments.show', $a),
+            ]);
+        }
+
+        // Counseling sessions
+        foreach ($student->counselingSessions()->with('counselor')->get() as $s) {
+            $events->push([
+                'date'     => $s->created_at->toDateString(),
+                'time'     => $s->created_at->format('H:i'),
+                'type'     => 'session',
+                'icon'     => '📝',
+                'color'    => 'purple',
+                'title'    => 'Counseling Session',
+                'subtitle' => 'Concern: ' . ucwords(str_replace('_', ' ', $s->presenting_concern ?? 'Not specified')),
+                'status'   => ucwords(str_replace('_', ' ', $s->session_status ?? '')),
+                'url'      => route('sessions.show', $s),
+            ]);
+        }
+
+        // Referrals
+        foreach ($student->referrals()->with('referredBy')->get() as $r) {
+            $events->push([
+                'date'     => $r->created_at->toDateString(),
+                'time'     => $r->created_at->format('H:i'),
+                'type'     => 'referral',
+                'icon'     => '🚩',
+                'color'    => 'orange',
+                'title'    => 'Referral — ' . ucwords(str_replace('_', ' ', $r->reason_category)),
+                'subtitle' => 'Submitted by ' . ($r->referredBy?->name ?? 'Faculty') . ' • ' . ucfirst($r->urgency) . ' urgency',
+                'status'   => ucwords(str_replace('_', ' ', $r->status)),
+                'url'      => route('referrals.show', $r),
+            ]);
+        }
+
+        // Disciplinary records
+        foreach ($student->disciplinaryRecords()->get() as $d) {
+            $events->push([
+                'date'     => $d->incident_date,
+                'time'     => null,
+                'type'     => 'disciplinary',
+                'icon'     => '⚠️',
+                'color'    => 'red',
+                'title'    => ucfirst($d->offense_type) . ' offense — ' . $d->offense_category,
+                'subtitle' => \Illuminate\Support\Str::limit($d->description, 100),
+                'status'   => ucwords(str_replace('_', ' ', $d->status)),
+                'url'      => route('disciplinary.show', $d),
+            ]);
+        }
+
+        // Test results
+        foreach ($student->testResults()->with('test')->get() as $t) {
+            $events->push([
+                'date'     => $t->test_date,
+                'time'     => null,
+                'type'     => 'test_result',
+                'icon'     => '🧪',
+                'color'    => 'indigo',
+                'title'    => 'Test: ' . ($t->test?->test_name ?? 'Psychological Test'),
+                'subtitle' => 'Result: ' . ($t->interpretation_level ?? 'Recorded'),
+                'status'   => $t->is_released ? 'Released' : 'Pending',
+                'url'      => route('test-results.show', $t),
+            ]);
+        }
+
+        // Clearance requests
+        foreach ($student->clearanceRequests()->get() as $c) {
+            $events->push([
+                'date'     => $c->created_at->toDateString(),
+                'time'     => $c->created_at->format('H:i'),
+                'type'     => 'clearance',
+                'icon'     => '✅',
+                'color'    => 'green',
+                'title'    => ucfirst($c->clearance_type) . ' Clearance Request',
+                'subtitle' => $c->purpose ?? '',
+                'status'   => ucwords(str_replace('_', ' ', $c->status)),
+                'url'      => route('clearance.show', $c),
+            ]);
+        }
+
+        // Good moral certificates
+        foreach ($student->certificates()->get() as $cert) {
+            $events->push([
+                'date'     => optional($cert->issued_at)->toDateString() ?? $cert->created_at->toDateString(),
+                'time'     => null,
+                'type'     => 'certificate',
+                'icon'     => '🎓',
+                'color'    => 'emerald',
+                'title'    => 'Good Moral Certificate Issued',
+                'subtitle' => 'Cert. No. ' . $cert->certificate_number . ' • ' . $cert->purpose,
+                'status'   => $cert->is_revoked ? 'Revoked' : 'Active',
+                'url'      => route('certificates.show', $cert),
+            ]);
+        }
+
+        // Documents uploaded
+        foreach ($student->documents as $doc) {
+            $events->push([
+                'date'     => $doc->created_at->toDateString(),
+                'time'     => $doc->created_at->format('H:i'),
+                'type'     => 'document',
+                'icon'     => '📎',
+                'color'    => 'gray',
+                'title'    => 'Document Uploaded: ' . $doc->document_type,
+                'subtitle' => $doc->file_name,
+                'status'   => null,
+                'url'      => null,
+            ]);
+        }
+
+        // Sort newest first, group by date
+        $events = $events->sortByDesc(fn ($e) => ($e['date'] instanceof \Carbon\Carbon ? $e['date']->toDateString() : $e['date']) . ' ' . ($e['time'] ?? '00:00'))
+                         ->values();
+
+        $grouped = $events->groupBy(fn ($e) => $e['date'] instanceof \Carbon\Carbon ? $e['date']->format('Y-m-d') : $e['date']);
+
+        return view('students.timeline', compact('student', 'grouped', 'events'));
+    }
+
     public function edit(StudentProfile $student)
     {
         $counselors = User::where('role', 'guidance_counselor')->where('is_active', true)->get();

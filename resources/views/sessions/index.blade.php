@@ -1,7 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Case Notes</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">📝 Case Notes</h2>
+            <div class="flex items-center gap-2">
+                @php
+                    $verifiedAt = session('case_note_pin_verified_at');
+                    $remaining = $verifiedAt ? max(0, 15 * 60 - (now()->timestamp - $verifiedAt)) : 0;
+                @endphp
+                @if($remaining > 0)
+                <span class="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-medium" title="PIN verified — re-prompts in {{ ceil($remaining/60) }} min">
+                    🔓 Unlocked ({{ ceil($remaining/60) }}m)
+                </span>
+                <form method="POST" action="{{ route('case-note-pin.lock') }}">
+                    @csrf
+                    <button class="text-xs text-gray-500 hover:text-red-600">🔒 Lock now</button>
+                </form>
+                @endif
+            </div>
         </div>
     </x-slot>
 

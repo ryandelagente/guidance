@@ -18,6 +18,10 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             ExitSurveyQuestionSeeder::class,
             SampleDataSeeder::class,
+            NewModulesSeeder::class,
+            CounselingFeaturesSeeder::class,
+            OperationsSeeder::class,
+            InteractiveFeaturesSeeder::class,
         ]);
     }
 }

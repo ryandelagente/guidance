@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class StudentProfile extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'user_id', 'first_name', 'middle_name', 'last_name', 'suffix',
         'date_of_birth', 'sex', 'civil_status', 'religion', 'nationality',
@@ -45,6 +48,41 @@ class StudentProfile extends Model
     public function emergencyContacts()
     {
         return $this->hasMany(EmergencyContact::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    public function counselingSessions()
+    {
+        return $this->hasMany(CounselingSession::class);
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(Referral::class);
+    }
+
+    public function disciplinaryRecords()
+    {
+        return $this->hasMany(DisciplinaryRecord::class);
+    }
+
+    public function testResults()
+    {
+        return $this->hasMany(TestResult::class);
+    }
+
+    public function clearanceRequests()
+    {
+        return $this->hasMany(ClearanceRequest::class);
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(GoodMoralCertificate::class);
     }
 
     public function getFullNameAttribute(): string

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class GoodMoralCertificate extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'student_profile_id', 'issued_by', 'clearance_request_id',
         'certificate_number', 'purpose', 'validity_months',

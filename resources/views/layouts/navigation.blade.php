@@ -37,6 +37,64 @@
             Dashboard
         </a>
 
+        {{-- Announcements --}}
+        <a href="{{ route('announcements.index') }}" class="{{ $lc(request()->routeIs('announcements.*')) }}">
+            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+            </svg>
+            Announcements
+        </a>
+
+        {{-- Resource Library (everyone) --}}
+        <a href="{{ route('resources.index') }}" class="{{ $lc(request()->routeIs('resources.*')) }}">
+            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Resources
+        </a>
+
+        {{-- Action Plans (staff + students) --}}
+        @if($isStaff || $role === 'student')
+        <a href="{{ route('action-plans.index') }}" class="{{ $lc(request()->routeIs('action-plans.*')) }}">
+            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            </svg>
+            Action Plans
+        </a>
+        @endif
+
+        {{-- Workshops (everyone) --}}
+        <a href="{{ route('workshops.index') }}" class="{{ $lc(request()->routeIs('workshops.*')) }}">
+            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/>
+            </svg>
+            Workshops
+        </a>
+
+        {{-- Messages (everyone) --}}
+        <a href="{{ route('messages.index') }}" class="{{ $lc(request()->routeIs('messages.*')) }}">
+            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+            Messages
+        </a>
+
+        {{-- RIASEC Career Test (students + staff) --}}
+        @if($role === 'student' || $isStaff)
+        <a href="{{ route('riasec.index') }}" class="{{ $lc(request()->routeIs('riasec.*')) }}">
+            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+            </svg>
+            Career Test
+        </a>
+        @endif
+
         {{-- ── ADMIN ─────────────────────────────────────────────── --}}
         @if($role === 'super_admin')
             <p class="pt-4 pb-1 px-3 text-xs font-semibold text-red-400 uppercase tracking-wider">Administration</p>
@@ -47,12 +105,46 @@
                 </svg>
                 User Accounts
             </a>
+            <a href="{{ route('admin.audit-logs.index') }}" class="{{ $lc(request()->routeIs('admin.audit-logs.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                </svg>
+                Audit Log
+            </a>
         @endif
 
         {{-- ── STAFF ─────────────────────────────────────────────── --}}
         @if($isStaff)
 
             <p class="pt-4 pb-1 px-3 text-xs font-semibold text-red-400 uppercase tracking-wider">Management</p>
+
+            {{-- Walk-in Queue --}}
+            <a href="{{ route('walk-in.index') }}" class="{{ $lc(request()->routeIs('walk-in.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                </svg>
+                Walk-in Queue
+            </a>
+
+            {{-- Anonymous Concerns --}}
+            <a href="{{ route('anonymous-concerns.index') }}" class="{{ $lc(request()->routeIs('anonymous-concerns.index') || request()->routeIs('anonymous-concerns.show') || request()->routeIs('anonymous-concerns.update')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M18 8h1a4 4 0 010 8h-1M5 8h14M5 8a4 4 0 100 8h14M9 13h2m4 0h2"/>
+                </svg>
+                Anonymous Tips
+            </a>
+
+            {{-- My Caseload --}}
+            <a href="{{ route('caseload.index') }}" class="{{ $lc(request()->routeIs('caseload.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+                My Caseload
+            </a>
 
             {{-- Students --}}
             <a href="{{ route('students.index') }}" class="{{ $lc(request()->routeIs('students.*')) }}">
@@ -79,6 +171,24 @@
                           d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
                 Case Notes
+            </a>
+
+            {{-- Group Sessions --}}
+            <a href="{{ route('group-sessions.index') }}" class="{{ $lc(request()->routeIs('group-sessions.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                Group Sessions
+            </a>
+
+            {{-- Screening Results --}}
+            <a href="{{ route('screening.index') }}" class="{{ $lc(request()->routeIs('screening.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+                Screening
             </a>
 
             {{-- Referrals --}}
@@ -163,8 +273,50 @@
                         </svg>
                         My Schedule
                     </a>
+                    <a href="{{ route('schedule-matrix.index') }}" class="{{ $sc(request()->routeIs('schedule-matrix.*')) }}">
+                        <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                        </svg>
+                        Schedule Matrix
+                    </a>
                 </div>
             </div>
+
+            {{-- Wellness Monitoring --}}
+            <a href="{{ route('wellness.index') }}" class="{{ $lc(request()->routeIs('wellness.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                Wellness
+            </a>
+
+            {{-- Counselor Performance (Director / Admin emphasis, but staff can view) --}}
+            <a href="{{ route('performance.index') }}" class="{{ $lc(request()->routeIs('performance.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+                Performance
+            </a>
+
+            {{-- Calendar Sync --}}
+            <a href="{{ route('calendar-feed.settings') }}" class="{{ $lc(request()->routeIs('calendar-feed.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+                Calendar Sync
+            </a>
+
+            {{-- Service Feedback --}}
+            <a href="{{ route('session-feedback.index') }}" class="{{ $lc(request()->routeIs('session-feedback.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                </svg>
+                Service Feedback
+            </a>
 
             {{-- Analytics --}}
             <a href="{{ route('analytics.index') }}" class="{{ $lc(request()->routeIs('analytics.*')) }}">
@@ -209,6 +361,20 @@
                 </svg>
                 Appointments
             </a>
+            <a href="{{ route('wellness.index') }}" class="{{ $lc(request()->routeIs('wellness.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                Wellness Check-in
+            </a>
+            <a href="{{ route('screening.index') }}" class="{{ $lc(request()->routeIs('screening.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+                Mental Health Screening
+            </a>
             <a href="{{ route('test-results.index') }}" class="{{ $lc(request()->routeIs('test-results.*')) }}">
                 <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -222,9 +388,43 @@
                 </svg>
                 Clearance
             </a>
+
+            <p class="pt-4 pb-1 px-3 text-xs font-semibold text-red-400 uppercase tracking-wider">My Account</p>
+            <a href="{{ route('my-profile.edit') }}" class="{{ $lc(request()->routeIs('my-profile.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                My Profile
+            </a>
+            <a href="{{ route('data-privacy.index') }}" class="{{ $lc(request()->routeIs('data-privacy.*')) }}">
+                <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                My Data & Privacy
+            </a>
         @endif
 
     </nav>
+
+    {{-- ── Help + Notification Preferences (always available, at bottom of nav) ───── --}}
+    <div class="px-2 pb-3 pt-1 border-t border-red-800/50 space-y-0.5">
+        <a href="{{ route('notification-preferences.edit') }}" class="{{ $lc(request()->routeIs('notification-preferences.*')) }}">
+            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            Notifications
+        </a>
+        <a href="{{ route('help.index') }}" class="{{ $lc(request()->routeIs('help.*')) }}">
+            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Help & Guide
+        </a>
+    </div>
 
     {{-- ── User Footer ─────────────────────────────────────────── --}}
     <div class="flex-shrink-0 border-t border-red-800 p-3">
@@ -237,19 +437,26 @@
                 <p class="text-xs text-red-300 truncate leading-tight">{{ auth()->user()->getRoleDisplayName() }}</p>
             </div>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-1.5 mb-1.5">
             <a href="{{ route('profile.edit') }}"
                class="flex-1 text-center text-xs bg-red-800 hover:bg-red-700 text-red-100 rounded-md px-2 py-1.5 transition">
                 Profile
             </a>
-            <form method="POST" action="{{ route('logout') }}" class="flex-1">
-                @csrf
-                <button type="submit"
-                        class="w-full text-xs bg-red-800 hover:bg-red-700 text-red-100 rounded-md px-2 py-1.5 transition">
-                    Log Out
-                </button>
-            </form>
+            <a href="{{ route('two-factor.show') }}" title="Two-Factor Authentication"
+               class="flex-1 text-center text-xs bg-red-800 hover:bg-red-700 text-red-100 rounded-md px-2 py-1.5 transition flex items-center justify-center gap-1">
+                🛡️
+                @if(auth()->user()->hasTwoFactorEnabled())
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-400" title="2FA enabled"></span>
+                @endif
+            </a>
         </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit"
+                    class="w-full text-xs bg-red-800 hover:bg-red-700 text-red-100 rounded-md px-2 py-1.5 transition">
+                Log Out
+            </button>
+        </form>
     </div>
 
 </div>

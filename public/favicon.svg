@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#991b1b"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <!-- Shield -->
+  <path d="M32 10 L48 17 L48 34 C48 43 41 51 32 54 C23 51 16 43 16 34 L16 17 Z"
+        fill="#fff" opacity="0.95"/>
+  <!-- GMS letters -->
+  <text x="32" y="40" font-family="Arial, Helvetica, sans-serif"
+        font-weight="900" font-size="15" text-anchor="middle" fill="#7f1d1d"
+        letter-spacing="-0.5">GMS</text>
+  <!-- Small heart icon underneath -->
+  <path d="M32 22 C30 19 26 19 26 23 C26 26 32 30 32 30 C32 30 38 26 38 23 C38 19 34 19 32 22 Z"
+        fill="#7f1d1d"/>
+</svg>

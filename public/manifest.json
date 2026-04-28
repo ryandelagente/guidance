@@ -1,0 +1,21 @@
+{
+  "name": "CHMSU Guidance Management System",
+  "short_name": "CHMSU GMS",
+  "description": "Guidance and Counseling Management System for Carlos Hilado Memorial State University",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#7f1d1d",
+  "theme_color": "#7f1d1d",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "en"
+}

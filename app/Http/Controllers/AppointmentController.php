@@ -127,6 +127,13 @@ class AppointmentController extends Controller
             return back()->withErrors(['start_time' => 'This time slot is already booked. Please choose another.'])->withInput();
         }
 
+        // Auto-generate a Jitsi Meet room for virtual appointments
+        $meetingLink = null;
+        if ($data['meeting_type'] === 'virtual') {
+            $room = 'CHMSU-Guidance-' . strtolower(\Illuminate\Support\Str::random(10));
+            $meetingLink = "https://meet.jit.si/{$room}";
+        }
+
         $appointment = Appointment::create([
             'student_profile_id' => $studentProfile->id,
             'counselor_id'       => $data['counselor_id'],
@@ -135,6 +142,7 @@ class AppointmentController extends Controller
             'start_time'         => $data['start_time'],
             'end_time'           => $endTime,
             'meeting_type'       => $data['meeting_type'],
+            'meeting_link'       => $meetingLink,
             'student_concern'    => $data['student_concern'] ?? null,
             'status'             => 'pending',
         ]);

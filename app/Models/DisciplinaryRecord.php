@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class DisciplinaryRecord extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'student_profile_id', 'reported_by', 'handled_by',
         'offense_type', 'offense_category', 'incident_date',

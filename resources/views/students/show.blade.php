@@ -5,7 +5,11 @@
                 <a href="{{ route('students.index') }}" class="text-gray-400 hover:text-gray-600">← Back</a>
                 <h2 class="font-semibold text-xl text-gray-800">{{ $student->full_name }}</h2>
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-wrap">
+                <a href="{{ route('students.timeline', $student) }}"
+                   class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg">📋 Timeline</a>
+                <a href="{{ route('students.cumulative-record', $student) }}"
+                   class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg">📄 Print Record</a>
                 <a href="{{ route('students.edit', $student) }}"
                    class="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium px-4 py-2 rounded-lg">Edit</a>
                 <form method="POST" action="{{ route('students.destroy', $student) }}"

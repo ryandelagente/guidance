@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Referral extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'student_profile_id', 'referred_by', 'assigned_counselor_id',
         'reason_category', 'urgency', 'description', 'status',

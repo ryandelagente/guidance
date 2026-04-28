@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CHMSU Guidance Management System</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet"/>
     @if(file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -45,6 +47,10 @@
                         Go to Dashboard
                     </a>
                 @else
+                    <a href="{{ route('anonymous-concerns.create') }}"
+                       class="text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-2 rounded-lg transition">
+                        🤝 Speak Up
+                    </a>
                     <a href="{{ route('login') }}"
                        class="text-gray-600 hover:text-gray-900 text-sm font-medium px-3 py-2 rounded-lg transition">
                         Sign In

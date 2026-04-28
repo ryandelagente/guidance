@@ -20,11 +20,24 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Handle login. If the user has 2FA enabled, log them back out
+     * and redirect to the challenge instead of a finished session.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
+
+        $user = Auth::user();
+
+        if ($user && $user->hasTwoFactorEnabled()) {
+            $remember = $request->boolean('remember');
+            Auth::guard('web')->logout();
+
+            $request->session()->put('2fa_pending_user_id', $user->id);
+            $request->session()->put('2fa_pending_remember', $remember);
+
+            return redirect()->route('two-factor.challenge');
+        }
 
         $request->session()->regenerate();
 
